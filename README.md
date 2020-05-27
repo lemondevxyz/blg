@@ -1,2 +1,2 @@
 # blg
-blog software
+This is my take on blogs.
