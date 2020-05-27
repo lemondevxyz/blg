@@ -1,0 +1,45 @@
+{{ define "wysiwyg-form"}}
+<div name="{{ .name }}" id="Content"></div>
+<script type="text/javascript">
+pell.init({
+	element: document.getElementById('Content'),
+	onChange: function(html){},
+})
+
+document.addEventListener('DOMContentLoaded', function(){
+	setTimeout(function(){
+		var pellelement = document.getElementsByClassName('pell-content')[0];
+		{{ if .content }}
+		pellelement.innerHTML = '{{.content}}'
+		{{ end }}
+	}, 10);
+});
+
+var elem = document.getElementById('Content');
+var observer = new MutationObserver(function(mutations) {
+	mutations.forEach(function(mutation) {
+		if (mutation.attributeName == "disabled") {
+			var ds = elem.getAttribute("disabled");
+			var disabled = ds == "" ? true : false;
+
+			var action = elem.childNodes[0]
+			for(var i=0; i < action.children.length; i++) {
+				var v = action.children[i];
+				v.disabled = disabled 
+			}
+
+			var other = elem.childNodes[1];
+			other.contentEditable = !disabled;
+		}
+	});
+});
+
+observer.observe(elem, {
+  attributes: true //configure it to listen to attribute changes
+});
+
+function getValueContent() {
+	return document.getElementsByClassName('pell-content')[0].innerHTML;
+}
+</script>
+{{ end }}

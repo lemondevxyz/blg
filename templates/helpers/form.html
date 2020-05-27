@@ -1,0 +1,114 @@
+{{define "form"}}
+{{ $form := . }}
+<form action="{{$form.action}}" method="{{upper $form.method}}" id="form">
+	{{ if $form.input }}
+	{{ range $form.input }}
+	<div class="info">
+		{{ if .optional }}
+		<input id="{{.name}}-check" type="checkbox" onchange="onCheck(this)"> 
+		<small>Change {{lower .name}}</small>
+		{{ end }}
+		{{ if .customInput }}
+		{{ safeHTML .customInput }}
+		{{ else }}
+		{{ if eq .type "textarea"}}
+		<textarea name="{{.name}}" {{if .maxlength}}maxlength="{{.maxlength}}"{{end}} rows="3" {{if .title}}title="{{.title}}"{{end}}>{{.value}}</textarea>
+		{{ else }}
+		<input class="field" type="{{.type}}" name="{{.name}}" placeholder="{{if .placeholder}}{{.placeholder}}{{end}}" {{if .required}}required{{end}} {{if .pattern}} pattern="{{.pattern}}"{{end}} {{if .title}}title="{{.title}}"{{end}} {{if .optional}}disabled{{end}} {{if .value}}value="{{.value}}"{{if and .checked (eq .type "checkbox")}}checked{{end}}{{end}}>
+		{{ end }}
+		{{ if eq .type "checkbox"}}
+		{{ .displayName }}
+		{{ end }}
+		{{ end }}
+	</div>
+	{{ end }}
+	{{ end }}
+
+	{{ if $form.content }}
+	{{ $form.content }}
+	<br>	
+	{{ end }}
+
+	<button class="button">SUBMIT</button>
+</form>
+<script type="text/javascript">
+
+function onCheck(elem) {
+	input = elem.parentNode.children[2];
+	if(elem.checked) {
+		input.removeAttribute("disabled");
+	} else {
+		input.setAttribute("disabled", "");
+	}
+}
+
+window.addEventListener( "load", function () {
+
+	// Access the form element...
+	const form = document.getElementById( "form" );
+	for(var i=0; i < form.children.length;i++) {
+		var v = form.children[i];
+		// we know it's optional
+		if(v.children.length > 1) {
+			v.children[2].setAttribute("disabled", "");
+		}
+	}
+
+	function sendData() {
+		const XHR = new XMLHttpRequest();
+
+		// Bind the FormData object and the form element
+		const FD = new FormData( form );
+		{{ range $form.input }}
+		{{ if .customInput}}
+		FD.append("{{.name}}", getValue{{removeQuotes .name}}());
+		{{ end }}
+		{{ end }}
+
+		for(var i=0; i < form.length;i++) {
+			v = form.children[i];
+			if(v !== undefined) {
+				if(v.children !== undefined && v.children.length > 1) {
+					check = v.children[0];
+					field = v.children[2];
+					if(field !== undefined && check !== undefined) {
+						if(!check.checked) {
+							FD.delete(field.getAttribute("name"))
+						}
+					}
+				}
+			}
+		}
+
+		// Define what happens when data is submitted, doesn't depend on status code
+		XHR.addEventListener( "load", function(event) {
+			{{ range $code, $value := $form.errors }}
+			if(event.currentTarget.status == parseInt({{$code}})) {
+				alert('{{$value}}')
+				return
+			}
+			{{ end }}
+		
+			if(event.currentTarget.status == 200) {
+				setTimeout(function(){
+					window.location.href = {{ if $form.redirect }}{{$form.redirect}}{{ else }}"/"{{ end }}
+				}, 500)
+		    	}
+		});
+
+		// Set up our request
+		XHR.open( "{{upper $form.method}}", form.action );
+
+		// The data sent is what the user provided in the form
+		XHR.send( FD );
+	}
+
+		// ...and take over its submit event.
+	form.addEventListener( "submit", function ( event ) {
+		event.preventDefault();
+
+		sendData();
+	});
+})
+</script>
+{{end}}

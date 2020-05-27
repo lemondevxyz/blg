@@ -1,0 +1,42 @@
+{{template "header" .}}
+{{/* . here is actually a user */}}
+<form action="/api/auth/logout" method="post" id="auth-form">
+	<button class="button">LOGOUT</button>
+</form>
+<script type="text/javascript">
+window.addEventListener( "load", function () {
+
+	// Access the form element...
+	const form = document.getElementById( "auth-form" );
+
+	function sendData() {
+		const XHR = new XMLHttpRequest();
+
+		// Bind the FormData object and the form element
+		const FD = new FormData();
+
+		// Define what happens when data is submitted, doesn't depend on status code
+		XHR.addEventListener( "load", function(event) {
+			if(event.currentTarget.status == 200) {
+				setTimeout(function(){
+					window.location.href = "/";
+				}, 500);
+			}
+		} );
+
+		// Set up our request
+		XHR.open( "POST", form.action );
+
+		// The data sent is what the user provided in the form
+		XHR.send( FD );
+	}
+
+		// ...and take over its submit event.
+	form.addEventListener( "submit", function ( event ) {
+		event.preventDefault();
+
+		sendData();
+	});
+})
+</script>
+{{template "footer"}}

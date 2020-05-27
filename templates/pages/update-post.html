@@ -1,0 +1,25 @@
+{{ $u := .User }}
+{{ $p := .Post }}
+{{ $header := dict "Title" (printf "Editing post - %s" $p.Title) }}
+{{template "header" (merge $header .)}}
+{{ if and $u $p }}
+{{ template "wysiwyg" }}
+<h1>Update Post</h1>
+{{ $file := dict "type" "file"}}
+{{ $title := dict "type" "text" "placeholder" "Title" "name" "Title" "optional" "true" "value" $p.Title}}
+{{ $desc := dict "type" "text" "placeholder" "Description" "name" "Description" "optional" "true" "value" $p.Description}}
+{{ $content := dict "customInput" (getTemplate "wysiwyg-form" (dict "content" $p.Content "name" "Content")) "name" "Content" "optional" "true" }}
+{{ $statusdict := dict "type" "checkbox" "name" "Public" "displayName" "Public" "value" "true" }}
+{{ $status := dict }}
+{{ if $p.Public }}
+{{ $status = merge $statusdict (dict "checked" "true") }}
+{{ else }}
+{{ $status = $statusdict }}
+{{ end }}
+{{ template "form" (dict "action" (printf "/api/post/%s" $p.Title) "method" "patch" "input" (list $file $title $desc $content $status) "errors" (dict "400" "Bad Request" "500" "This post title has already been taken") "redirect" (printf "/view-by-id/%d" $p.ID)) }}
+{{ else }}
+<script type="text/javascript">
+	window.location.href = "/login"
+</script>
+{{ end }}
+{{template "footer"}}

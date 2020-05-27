@@ -1,0 +1,64 @@
+{{ $p := .Post }}
+{{ $u := .User }}
+{{ $owner := false }}
+{{ if $p }}
+{{ $header := dict "Title" (printf "Reading post - %s" $p.Title) }}
+{{ template "header" (merge $header .) }}
+{{ if $u }}
+{{ $owner = eq $p.UserID $u.ID }}
+{{ if $owner }}
+<br>
+<a href="/update-post/{{$p.Title}}">Edit</a> | 
+<a onclick="deletePost()">Delete</a>
+<script type="text/javascript">
+function deletePost() {
+	const XHR = new XMLHttpRequest();
+	XHR.addEventListener( "load", function(event) {
+		setTimeout(function() {
+			window.location.href = "/";
+		}, 500)
+	})
+
+	XHR.open( "DELETE", "/post/{{$p.Title}}");
+	XHR.send();
+}
+</script>
+{{ end }}
+{{ end }}
+{{ if or $p.Public (and (not $p.Public) $owner) }}
+<h1 style="margin-bottom: 0px;">
+	{{$p.Title}}
+	{{ if not $p.Public }}
+	<small style="font-size: 1rem;"><u>private</u></small>
+	{{ end }}
+</h1>
+<small>
+	<i>
+		{{$p.Description}}
+	</i>
+	<br>	
+	<a href="/profile-by-id/{{$p.UserID}}">author</a>
+</small>
+<br>
+<br>
+{{safeHTML $p.Content}}
+<br>
+<div class="flex">
+	<div style="vertical-align: middle; width: 50%;">
+<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Read '{{$p.Title}}' on {{.ShareURL}}"
+	>Tweet</a> | 
+<a href="https://facebook.com/share.php?u={{.ShareURL}}&title=Read '{{$p.Title}}'">Facebook</a>
+	</div>
+	<div style="width: 50%;text-align: right;">{{formatDate $p.UpdatedAt}}</div>
+</div>
+{{ else }}
+<script type="text/javascript">
+window.location.href = "/all";
+</script>
+{{ end }}
+{{ else }}
+<script type="text/javascript">
+window.location.href = "/all";
+</script>
+{{ end }}
+{{template "footer"}}

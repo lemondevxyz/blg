@@ -1,0 +1,18 @@
+{{ $header := dict "Title" "Homepage"}}
+{{template "header" (merge $header .)}}
+<h1>
+Welcome to my blog friend.
+</h1>
+{{ range (getPosts 5) }}
+{{ if .Public }}
+<h3>
+	<a href="/view/{{.Title}}">{{.Title}}</a>
+	<br>	
+	<small>{{.Description}}
+		<br>
+		<i style="font-size: 0.75em;">{{formatDate .UpdatedAt}}</i>
+	</small>
+</h3>
+{{ end }}
+{{ end }}
+{{template "footer"}}

@@ -1,0 +1,172 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>{{if .Title}}{{.Title}}{{end}}</title>
+		<meta>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+@media only screen and (max-width: 768px) {
+  nav {
+  -webkit-flex-direction:	column;
+     -moz-flex-direction:	column;
+      -ms-flex-direction:	column;
+          flex-direction:	column;
+  }
+}
+		</style>
+		<style>
+body {
+	max-width: 960px;
+	margin: 0 auto;
+	width: 90%;
+	background-color: #151515;
+	color: rgba(255, 255, 255, 0.7);
+	font-family: Roboto, sans-serif;
+	line-height: 1.5;
+	font-size: 22px;
+}
+
+a {
+	cursor: pointer;
+}
+
+a:visited, a {
+	color: paleturquoise;
+	text-decoration: none;
+}
+
+a:hover {
+	color: white;
+}
+
+.flex {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+}
+
+nav {
+	padding: 1em;
+  	-webkit-justify-content: 	space-between;
+     	-moz-justify-content: 		space-between;
+      	-ms-justify-content: 		space-between;
+        justify-content: 		space-between;
+	-ms-flex-pack: 			space-between;
+	font-size: 1em;
+}
+
+h1,h2 {
+	font-weight: 600;
+}
+
+h2 {
+	border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+h2, h3 {
+	margin-top: 0em;
+	margin-bottom: 0.5em;
+}
+
+h3 {
+	font-weight: normal;
+}
+
+input[type="text"], input[type="password"], input[type="email"], textarea {
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	padding: 1em;
+	display: block;
+	width: 100%;
+	color: white;
+	font-family: sans-serif;
+	font-size: 0.75em;
+}
+
+textarea {
+	font-size: 0.75em;
+	line-height: 1.5;
+}
+
+textarea:disabled {
+	opacity: 0.54;
+}
+
+button.button {
+	background-color: #333;
+	border: 0em;
+	color: white;
+	padding: 1em 2em;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+input.invalid {
+	border: 2px solid crimson;
+}
+
+div.info {
+	margin: 1em 0em;
+}
+
+.info input[type="checkbox"]:not(:checked) + small + input {
+	opacity: 0.54;
+	pointer-events: none;
+}
+
+a.active {
+	color: white;
+	font-weight: bold;
+}
+
+#Content[disabled] > .pell-content, #Content[disabled] > .pell-actionbar {
+	opacity: 0.54;
+}
+
+pre {
+	background-color: rgba(255, 255, 255, 0.05);
+	padding: 0.5em 1em;
+	font-family: monospace;
+}
+
+img {
+	width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+		</style>
+	</head>
+	<body>
+		<nav class="flex">
+			{{template "header_link" (dict "url" .URL "name" "Homepage" "href" "/")}}
+			{{template "header_link" (dict "url" .URL "name" "All posts" "href" "/all")}}
+			{{ if .User}} 
+			{{template "header_link" (dict "url" .URL "name" "Dashboard" "href" "/dashboard")}}
+			{{template "header_link" (dict "url" .URL "name" "Profile" "href" (printf "/profile/%s" .User.Username))}}
+			<a onclick="logout()">Logout</a>
+			<script type="text/javascript">
+			function logout() {
+				const XHR = new XMLHttpRequest();
+				XHR.addEventListener( "load", function(event) {
+					setTimeout(function() {
+						window.location.href = "/";
+					}, 500)
+				})
+
+				XHR.open( "POST", "/api/auth/logout");
+				XHR.send();
+			}
+			</script>
+			{{ else }}
+			{{template "header_link" (dict "url" .URL "name" "Login" "href" "/login")}}
+			{{end}}
+		</nav>
+{{end}}

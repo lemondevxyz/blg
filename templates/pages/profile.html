@@ -1,0 +1,47 @@
+{{ $u := .SelUser }}
+{{ if $u }}
+{{ $header := dict "Title" (printf "Profile - %s" $u.Username)}}
+{{ $name := ""}}
+{{ if and $u.Firstname $u.Lastname }}
+{{ $name = printf "%s %s" $u.Firstname $u.Lastname }}
+{{ else }}
+{{ $name = $u.Username }}
+{{ end }}
+{{ template "header" (merge $header .) }}
+<h1 style="margin-bottom: 0px;">{{$name}}</h1>
+<small>{{$u.Description}}</small>
+<br>
+<br>
+<h2>{{$name}}'s posts</h2>
+{{ $uid := 0 }}
+{{ if .User }} 
+{{ $uid = .User.ID }}
+{{ end }}
+{{ range getPostsByUserId $u.ID }}
+{{ if or .Public (and (not .Public) (eq $u.ID $uid)) }}
+<h3>
+	<a href="/view/{{.Title}}">{{.Title}}</a>
+	<small style="font-size: 0.75em;">
+		{{ if not .Public }}
+		<u>
+			private
+		</u>
+		{{ end }}
+	</small>
+	<br>
+	
+	<small>{{.Description}}
+		<br>
+		<i style="font-size: 0.75em;">
+		{{formatDate .UpdatedAt}}
+		</i>
+	</small>
+</h3>
+{{ end }}
+{{ end }}
+{{ else }}
+<script type="text/javascript">
+window.location.href = "/";
+</script>
+{{ end }}
+{{ template "footer" }}

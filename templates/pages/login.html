@@ -1,0 +1,13 @@
+{{$header := dict "Title" "Login"}}
+{{template "header" (merge $header .)}}
+{{ if not .User }}
+{{ $userid := dict "name" "UserID" "placeholder" "Email or username" "required" true "type" "text" "pattern" ".{3,}" "title" "Must have atleast 3 characters" }}
+{{ $password := dict "name" "Password" "placeholder" "Password" "required" true "type" "password" "pattern" ".{8,}" "title" "Must have atleast 8 charcaters"}}
+{{ template "form" (dict "action" "/api/auth/login" "method" "post" "input" (list $userid $password) "redirect" "/dashboard" "errors" (dict "404" "Invalid credenitals" "400" "Bad request"))}}
+<br>
+OR you could register through this <a href="/register">link</a>
+{{ else }}
+<h1>You're already logged in</h1>
+<a href="/logout">logout</a>
+{{ end }}
+{{template "footer"}}

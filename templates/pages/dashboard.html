@@ -1,0 +1,19 @@
+{{ $u := .User }}
+{{ if $u }}
+{{ $header := dict "Title" (printf "Dashboard - %s" $u.Username) }}
+{{ template "header" (merge . $header) }}
+<h1>Dashboard - {{$u.Username}}</h1>
+<h2>Modify your info</h2>
+{{ $firstname := dict "name" "Firstname" "placeholder" "First Name" "required" true "type" "text" "optional" true "value" $u.Firstname}}
+{{ $lastname := dict "name" "Lastname" "placeholder" "Last Name" "required" true "type" "text" "optional" true "value" $u.Lastname}}
+{{ $email := dict "name" "Email" "placeholder" "Email" "required" true "type" "email" "title" "Must be an email" "optional" true "value" $u.Email }}
+{{ $username := dict "name" "Username" "placeholder" "Username" "required" true "type" "text" "pattern" ".{3,}" "title" "Must have atleast 3 characters" "optional" true "value" $u.Username }}
+{{ $desc := dict "name" "Description" "placeholder" "Description" "required" true "type" "textarea" "maxlength" "280" "optional" true "value" $u.Description "title" "280 Character Limit"}}
+{{ $password := dict "name" "Password" "placeholder" "Password" "required" true "type" "password" "pattern" ".{8,}" "title" "Must have atleast 8 charcaters" "optional" true }}
+{{ template "form" (dict "action" "/api/user" "method" "patch" "input" (list $firstname $lastname $desc $email $username $password) "redirect" "/dashboard" "errors" (dict "400" "Error with validation, make sure all fields are valid." "500" "Email or username has been already used"))}}
+{{ else }}
+<script type="text/javascript">
+	window.location.href = "/login"
+</script>
+{{ end }}
+{{ template "footer" }}
