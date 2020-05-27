@@ -1,0 +1,5 @@
+# ignore database
+db.sqlite3
+
+# ignore binary
+bin
