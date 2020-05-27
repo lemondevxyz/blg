@@ -65,6 +65,43 @@ func GetPosts(number int) (ps []*Post) {
 	return
 }
 
+func GetPostsCount(number int) (count int) {
+	order := "created_at DESC"
+
+	if number > 0 {
+		db.Model(&Post{}).Order(order).Limit(number).Count(&count)
+	} else {
+		db.Model(&Post{}).Order(order).Count(&count)
+	}
+
+	return
+}
+
+func GetPublicPosts(number int) (ps []*Post) {
+	order := "created_at DESC"
+
+	if number > 0 {
+		db.Order(order).Limit(number).Where("public = ?", true).Find(&ps)
+	} else {
+		db.Order(order).Where("public = ?", true).Find(&ps)
+	}
+
+	return
+}
+
+func GetPublicPostsCount(number int) int64 {
+	var count int64
+	order := "created_at DESC"
+
+	if number > 0 {
+		db.Model(&Post{}).Order(order).Limit(number).Where("public = ?", true).Count(&count)
+	} else {
+		db.Model(&Post{}).Order(order).Where("public = ?", true).Count(&count)
+	}
+
+	return count
+}
+
 func GetPostsByUserId(uid uint) (ps []*Post) {
 	order := "created_at DESC"
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/feeds"
 )
 
 type server struct {
@@ -35,7 +37,7 @@ func (s *server) funcMap() template.FuncMap {
 		},
 
 		"getPosts": func(number int) []*Post {
-			return GetPosts(number)
+			return GetPublicPosts(number)
 		},
 
 		"getPostsByUserId": func(uid uint) []*Post {
@@ -122,10 +124,55 @@ func (s *server) initRoutes() {
 	})
 
 	// Post-related pages
+	// RSS
+	{
+		rsscache := ""
+		rsslen := 0
+
+		s.r.GET("/rss.xml", func(c *gin.Context) {
+			oldlen := rsslen
+			rsslen = int(GetPublicPostsCount(0))
+			if oldlen != rsslen {
+
+				domain := "http://localhost:8080"
+				feed := &feeds.Feed{
+					Title:       "blog",
+					Link:        &feeds.Link{Href: domain},
+					Description: "blog software",
+				}
+
+				posts := GetPublicPosts(0)
+				for _, v := range posts {
+					lnk := &feeds.Link{Href: fmt.Sprintf("%s/view-by-id/%d", domain, v.ID)}
+
+					feed.Add(&feeds.Item{
+						Title:       v.Title,
+						Link:        lnk,
+						Description: v.Description,
+						Created:     v.CreatedAt,
+						Updated:     v.UpdatedAt, // for-now
+					})
+				}
+
+				var err error
+
+				rsscache, err = feed.ToRss()
+				if err != nil {
+					log.Println("torss error: %v", err)
+					return
+				}
+			}
+
+			c.String(200, rsscache)
+		})
+	}
+
+	// Posts
 	s.r.GET("/all", func(c *gin.Context) {
 		c.HTML(200, "all.html", getParam(c))
 	})
 
+	// Creating or updating posts
 	s.r.GET("/create-post", func(c *gin.Context) {
 		c.HTML(200, "create-post.html", getParam(c))
 	})
@@ -135,6 +182,7 @@ func (s *server) initRoutes() {
 		c.HTML(200, "update-post.html", getParam(c))
 	})
 
+	// Viewing Posts
 	s.r.GET("/view/:title", func(c *gin.Context) {
 		title := c.Param("title")
 		if len(title) > 0 {
