@@ -3,11 +3,10 @@
 {{ if . }}
 {{template "wysiwyg"}}
 <h1>Create Post</h1>
-{{ $file := dict "type" "file"}}
 {{ $title := dict "type" "text" "placeholder" "Title" "name" "Title"}}
 {{ $desc := dict "type" "text" "placeholder" "Description" "name" "Description"}}
 {{ $content := dict "customInput" (getTemplate "wysiwyg-form" (dict "name" "Content")) "name" "Content"}}
-{{ template "form" (dict "action" "/api/post/" "method" "post" "input" (list $file $title $desc $content) "errors" (dict "400" "Bad Request" "500" "This post title has already been taken")) }}
+{{ template "form" (dict "action" "/api/post/" "method" "post" "input" (list $title $desc $content) "errors" (dict "400" "Bad Request" "500" "This post title has already been taken")) }}
 {{ else }}
 <script type="text/javascript">
 	window.location.href = "/login"

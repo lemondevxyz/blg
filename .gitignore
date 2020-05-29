@@ -1,5 +1,8 @@
 # ignore database
 db.sqlite3
 
+# ignore config
+config.yaml
+
 # ignore binary
 bin
