@@ -3,8 +3,24 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>{{if .Title}}{{.Title}}{{end}}</title>
-		<meta>
+		<title>{{getTitle}}{{if .Title}} | {{.Title}}{{end}}</title>
+
+		<meta propety="og:title" content="{{.Title}}">
+		<meta propety="og:description" content={{.Description}}>
+		<meta propety="og:type" content="blog">
+		<meta propety="og:url" content="http://{{getDomain}}{{.URL}}">
+
+		<meta propety="twitter:card" content="summary">
+		<meta propety="twitter:title" content="{{.Title}}">
+		<meta propety="twitter:description" content={{.Description}}>
+		<meta propety="twitter:type" content="blog">
+
+		{{ if .robots }}
+		<meta name="robots" content="{{.robots}}">
+		{{ else }}
+		<meta name="robots" content="noindex, nofollow">
+		{{ end }}
+
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<style>
@@ -152,6 +168,7 @@ img {
 			{{ if .User}} 
 			{{template "header_link" (dict "url" .URL "name" "Dashboard" "href" "/dashboard")}}
 			{{template "header_link" (dict "url" .URL "name" "Profile" "href" (printf "/profile/%s" .User.Username))}}
+			{{ template "header_link" (dict "url" .URL "name" "Create Post" "href" "/create-post") }}
 			<a onclick="logout()">Logout</a>
 			<script type="text/javascript">
 			function logout() {

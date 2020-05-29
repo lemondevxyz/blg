@@ -1,6 +1,6 @@
 {{ $u := .User }}
 {{ if $u }}
-{{ $header := dict "Title" (printf "Dashboard - %s" $u.Username) }}
+{{ $header := dict "Title" "Dashboard" "Description" "Dashboard page to modify the user's information" "robots" "noindex, nofollow" }}
 {{ template "header" (merge . $header) }}
 <h1>Dashboard - {{$u.Username}}</h1>
 <h2>Modify your info</h2>

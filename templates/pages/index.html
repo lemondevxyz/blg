@@ -1,4 +1,4 @@
-{{ $header := dict "Title" "Homepage"}}
+{{ $header := dict "Title" "Homepage" "Description" getDesc "robots" "index, follow" }}
 {{template "header" (merge $header .)}}
 <h1>
 Welcome to my blog friend.

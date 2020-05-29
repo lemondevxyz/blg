@@ -12,6 +12,8 @@ type Config struct {
 	DisableRegistration bool   // disable registration(requires restart)
 	Domain              string // used for RSS
 	Secret              string // session key, 32len
+	Title               string
+	Description         string
 	Port                uint16
 }
 
@@ -23,6 +25,8 @@ func init() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
+	viper.SetDefault("title", "John's blog")
+	viper.SetDefault("description", "A blog about programming")
 	viper.SetDefault("domain", "localhost:8080")
 	viper.SetDefault("secret", randstr.String(32))
 	viper.SetDefault("port", 8080)
@@ -37,10 +41,13 @@ func init() {
 			viper.WriteConfig()
 		}
 	}
+	log.Println(config)
 
 	// Unmarshal the config
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		log.Fatalf("Unable to unmarshal config, error: %v", err)
 	}
+	log.Println(config)
+
 }

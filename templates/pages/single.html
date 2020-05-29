@@ -2,7 +2,7 @@
 {{ $u := .User }}
 {{ $owner := false }}
 {{ if $p }}
-{{ $header := dict "Title" (printf "Reading post - %s" $p.Title) }}
+{{ $header := dict "Title" (printf "%s" $p.Title) "Description" $p.Description "robots" "index, nofollow" }}
 {{ template "header" (merge $header .) }}
 {{ if $u }}
 {{ $owner = eq $p.UserID $u.ID }}

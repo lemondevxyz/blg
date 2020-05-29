@@ -71,6 +71,18 @@ func (s *server) funcMap() template.FuncMap {
 		"pathEscape": func(str string) string {
 			return url.PathEscape(str)
 		},
+
+		"getTitle": func() string {
+			return config.Title
+		},
+
+		"getDesc": func() string {
+			return config.Description
+		},
+
+		"getDomain": func() string {
+			return config.Domain
+		},
 	}
 
 	for k, v := range myfuncmap {

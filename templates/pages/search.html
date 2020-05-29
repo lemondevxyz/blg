@@ -1,4 +1,4 @@
-{{ $header := dict "Title" "Search" }}
+{{ $header := dict "Title" "Search" "robots" "Description" (printf "Search for blog posts on %s" getTitle) "index, nofollow" }}
 {{ template "header" (merge . $header) }}
 <br>
 <input id="search" type="text" placeholder="Search">

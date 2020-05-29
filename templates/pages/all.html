@@ -1,4 +1,4 @@
-{{$header := dict "Title" "All posts"}}
+{{$header := dict "Title" "All posts" "Description" "Showcase page to show all posts ranked from most recent to least recent" "robots" "index, follow"}}
 {{template "header" (merge $header .)}}
 <h1>Displaying <u>all</u> posts</h1>
 {{ range (getPosts 0) }}

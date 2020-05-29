@@ -1,13 +1,17 @@
 {{ $u := .SelUser }}
 {{ if $u }}
-{{ $header := dict "Title" (printf "Profile - %s" $u.Username)}}
 {{ $name := ""}}
 {{ if and $u.Firstname $u.Lastname }}
 {{ $name = printf "%s %s" $u.Firstname $u.Lastname }}
 {{ else }}
 {{ $name = $u.Username }}
 {{ end }}
-{{ template "header" (merge $header .) }}
+{{ $desc := printf "%s's profile" $u.Username }}
+{{ if $u.Description }} 
+{{ $desc = $u.Description }}
+{{ end }}
+{{ $header := dict "Title" (printf "Profile - %s" $name) "Description" $desc "robots" "index, follow" }}
+{{ template "header" (merge $header .)  }}
 <h1 style="margin-bottom: 0px;">{{$name}}</h1>
 <small>{{$u.Description}}</small>
 <br>
