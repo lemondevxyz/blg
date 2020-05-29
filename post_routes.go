@@ -20,6 +20,12 @@ func RoutePostGet(c *gin.Context) {
 	c.JSON(200, p)
 }
 
+func RoutePostSearch(c *gin.Context) {
+	ps := PostSearch(c.Param("field"))
+
+	c.JSON(200, ps)
+}
+
 func RoutePostDelete(c *gin.Context) {
 	postval, _ := c.Get("post")
 	p, ok := postval.(*Post)

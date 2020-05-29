@@ -148,6 +148,7 @@ img {
 		<nav class="flex">
 			{{template "header_link" (dict "url" .URL "name" "Homepage" "href" "/")}}
 			{{template "header_link" (dict "url" .URL "name" "All posts" "href" "/all")}}
+			{{template "header_link" (dict "url" .URL "name" "Search" "href" "/search")}}
 			{{ if .User}} 
 			{{template "header_link" (dict "url" .URL "name" "Dashboard" "href" "/dashboard")}}
 			{{template "header_link" (dict "url" .URL "name" "Profile" "href" (printf "/profile/%s" .User.Username))}}
@@ -166,6 +167,7 @@ img {
 			}
 			</script>
 			{{ else }}
+			{{template "header_link" (dict "url" .URL "name" "Register" "href" "/register")}}
 			{{template "header_link" (dict "url" .URL "name" "Login" "href" "/login")}}
 			{{end}}
 		</nav>

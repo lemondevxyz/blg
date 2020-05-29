@@ -22,8 +22,8 @@ func main() {
 
 	s := &server{
 		r:      gin.Default(),
-		port:   8080,
-		secret: "rw7MU29MAKQr4TjFxmNCroh24npOzaIp",
+		port:   config.Port,
+		secret: config.Secret,
 	}
 
 	s.Start()

@@ -1,0 +1,74 @@
+{{ $header := dict "Title" "Search" }}
+{{ template "header" (merge . $header) }}
+<br>
+<input id="search" type="text" placeholder="Search">
+<br>
+<button class="button" onclick="search()">Submit</button>
+<ul id="list">
+</ul>
+<script type="text/javascript">
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+function month(mnth) {
+
+	return monthNames[mnth];
+}
+
+function search() {
+	var val = document.getElementById("search").value;
+
+	const XHR = new XMLHttpRequest();
+
+	// Define what happens when data is submitted, doesn't depend on status code
+	XHR.addEventListener( "load", function(event) {
+		if(event.currentTarget.status == 200) {
+			var js = JSON.parse(event.currentTarget.response);
+
+			var list = document.getElementById("list");
+			list.innerHTML = '';
+
+			for(var i=0; i < js.length;i++) {
+				var v = js[i];
+				if(v !== undefined) {
+					var node = document.createElement("h3")
+					var a = document.createElement("a")
+					a.href = "/view/"+v.Title
+					a.innerText = v.Title
+
+					node.appendChild(a)
+					node.appendChild(document.createElement("br"))
+
+					var small = document.createElement("small");
+					small.innerText = v.Description
+					small.appendChild(document.createElement("br"))
+
+					var i = document.createElement("i");
+					i.style.fontSize = "0.75em";
+
+					var parsedate = Date.parse(v.UpdatedAt)
+					var d = new Date(parsedate)
+
+					i.innerText = month(d.getMonth())+", "+d.getDay()+", "+d.getFullYear()
+
+					small.appendChild(i);
+					node.appendChild(small);
+
+					list.appendChild(node)
+					console.log("yesp");
+				}
+			}
+		} else {
+			alert("Something is wrong with the request, status code: "+event.currentTarget.status);
+		}
+	});
+
+	// Set up our request
+	XHR.open( "GET", "/api/post-search/"+val );
+
+	// The data sent is what the user provided in the form
+	XHR.send(  );
+}
+</script>
+{{ template "footer" }}

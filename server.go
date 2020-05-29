@@ -134,7 +134,8 @@ func (s *server) initRoutes() {
 			rsslen = int(GetPublicPostsCount(0))
 			if oldlen != rsslen {
 
-				domain := "http://localhost:8080"
+				domain := fmt.Sprintf("http://%s", config.Domain)
+
 				feed := &feeds.Feed{
 					Title:       "blog",
 					Link:        &feeds.Link{Href: domain},
@@ -170,6 +171,10 @@ func (s *server) initRoutes() {
 	// Posts
 	s.r.GET("/all", func(c *gin.Context) {
 		c.HTML(200, "all.html", getParam(c))
+	})
+
+	s.r.GET("/search", func(c *gin.Context) {
+		c.HTML(200, "search.html", getParam(c))
 	})
 
 	// Creating or updating posts
@@ -289,6 +294,8 @@ func (s *server) initAPI(router *gin.RouterGroup) {
 		post.DELETE("/:title", RoutePostMiddleware(RoutePostDelete))
 		post.PATCH("/:title", RoutePostMiddleware(RoutePostPatch))
 		post.POST("/", RoutePostPost)
+
+		router.GET("/post-search/:field", RoutePostSearch)
 	}
 
 	// user_routes.go

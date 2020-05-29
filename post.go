@@ -110,6 +110,13 @@ func GetPostsByUserId(uid uint) (ps []*Post) {
 	return
 }
 
+func PostSearch(field string) (ps []*Post) {
+	field = "%" + field + "%"
+	db.Where("public = ? AND title LIKE ? OR description LIKE ?", true, field, field).Find(&ps)
+
+	return
+}
+
 func (p *Post) GetOP() *User {
 	u := &User{}
 
