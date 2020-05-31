@@ -171,7 +171,6 @@ func (s *server) initRoutes() {
 
 				rsscache, err = feed.ToRss()
 				if err != nil {
-					log.Println("torss error: %v", err)
 					return
 				}
 			}

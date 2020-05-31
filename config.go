@@ -41,13 +41,11 @@ func init() {
 			viper.WriteConfig()
 		}
 	}
-	log.Println(config)
 
 	// Unmarshal the config
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		log.Fatalf("Unable to unmarshal config, error: %v", err)
 	}
-	log.Println(config)
 
 }

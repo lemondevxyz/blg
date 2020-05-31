@@ -79,7 +79,6 @@ func VerifyLogin(userid, password string) *User {
 	}
 
 	if !u.VerifyPassword(password) {
-		log.Println("failed :c")
 		return nil
 	}
 
