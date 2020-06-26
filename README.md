@@ -1,5 +1,5 @@
 # blg
-This is my take on blogs.
+This is my take on blogs. [screenshots](SCREENSHOT.md)
 
 ## Features
 - Creation, Deletion, Modification of posts
