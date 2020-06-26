@@ -24,7 +24,7 @@ When consuming the API, errors will be returned without a response body. only a 
 400 - Missing parameters in request
 403 - You are not logged in or You are logged in
 404 - Post/User doesn't exist
-500 - Error in database
+500 - Error in database(could mean that email already exists or post already exists)
 ```
 All parameters are Captialized, and need to be provided in a `application/www-x-form-urlencoded`-type request
 
